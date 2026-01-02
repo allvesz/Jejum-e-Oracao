@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="paper">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0" />
+  <title>Propósito & Fé</title>
+  <style>
+    :root{
+      --bg: #f8f5f0; --surface: #ffffff; --surface2:#f1ede4; --ink:#2d2d2d;
+      --muted:#7a746a; --line:#e0d8cc; --stroke:#dcd3c1; --accent:#5b8282;
+      --accent-light: #e8f0f0; --ok:#3a825b; --danger:#b34747;
+      --shadow: 0 8px 24px rgba(0,0,0,.05); --radius: 20px;
+      --sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Temas */
+    html[data-theme="sinai"] { --bg: #eaddca; --surface: #f4ede4; --surface2: #dfd3c3; --accent: #8b5e3c; --ink: #3e2723; --stroke: #cbbba0; }
+    html[data-theme="ceu"] { --bg: #eef5f9; --surface: #ffffff; --surface2: #dbe9f1; --accent: #4a90e2; --ink: #1a2a3a; --stroke: #cedee7; }
+    html[data-theme="noite"] { --bg: #121416; --surface: #1c1f23; --surface2:#262a30; --ink:#e0e4e8; --muted:#949ba2; --line:#2d343c; --stroke:#363e48; --accent:#85b6b6; }
+    html[data-theme="videira"] { --bg: #f5eff5; --surface: #ffffff; --surface2: #eadcea; --accent: #8e44ad; --ink: #2c1a32; --stroke: #d4bad4; }
+    html[data-theme="oliveira"] { --bg: #f0f4ef; --surface: #ffffff; --surface2: #dae4d8; --accent: #556b2f; --ink: #252d1c; --stroke: #c5d3c2; }
+    
+    *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+    body{ margin:0; font-family:var(--sans); color:var(--ink); background: var(--bg); transition: 0.3s; }
+    
+    .app-container { max-width: 500px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
+    .header { padding: 25px 20px; background: var(--surface); border-radius: 0 0 25px 25px; box-shadow: var(--shadow); border-bottom: 1px solid var(--stroke); }
+    .header h1 { margin: 0; font-size: 20px; font-weight: 800; color: var(--accent); }
+    .content { padding: 20px 20px 100px; flex: 1; }
+
+    .card { background: var(--surface); border-radius: var(--radius); padding: 20px; margin-bottom: 15px; border: 1px solid var(--stroke); box-shadow: var(--shadow); }
+    .input-group { margin-bottom: 15px; }
+    label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+    input, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--stroke); background: var(--bg); color: var(--ink); font-size: 14px; }
+    
+    .btn-main { background: var(--accent); color: white; border: none; padding: 16px; border-radius: 16px; font-weight: 700; font-size: 16px; width: 100%; cursor: pointer; }
+
+    .weekday-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+    .day-pill { padding: 10px; border-radius: 10px; border: 1px solid var(--stroke); text-align: center; font-size: 12px; font-weight: 600; cursor: pointer; background: var(--bg); }
+    .day-pill.selected { background: var(--accent); color: white; border-color: var(--accent); }
+
+    .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--stroke); z-index: 100; }
+    .nav-item { border: none; background: none; color: var(--muted); font-size: 11px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex: 1; }
+    .nav-item.active { color: var(--accent); }
+    .nav-icon { font-size: 20px; }
+
+    /* Estilo do Diário Detalhado */
+    .timeline-item { display: flex; flex-direction: column; gap: 10px; padding: 15px 0; border-bottom: 1px solid var(--line); }
+    .timeline-header { display: flex; align-items: center; gap: 12px; }
+    .day-circle { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--stroke); display: grid; place-items: center; font-weight: 800; font-size: 12px; flex-shrink: 0; }
+    .day-circle.done-all { background: var(--ok); border-color: var(--ok); color: white; }
+    
+    .check-group { display: flex; gap: 8px; flex-wrap: wrap; margin-left: 44px; }
+    .check-tag { padding: 6px 12px; border-radius: 20px; border: 1px solid var(--stroke); font-size: 10px; font-weight: 700; cursor: pointer; background: var(--bg); color: var(--muted); transition: 0.2s; }
+    .check-tag.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+    .hide { display: none; }
+    hr { border: 0; border-top: 1px solid var(--line); margin: 20px 0; }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <header class="header">
+    <h1 id="txt-app-title">🙏 Propósito & Fé</h1>
+  </header>
+
+  <main class="content">
+    <section id="view-novo">
+      <div class="card">
+        <div class="input-group">
+          <label id="lbl-tema">Título da Campanha</label>
+          <input type="text" id="p-tema" placeholder="Ex: Jejum de Daniel">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="input-group">
+            <label id="lbl-inicio">Início</label>
+            <input type="date" id="p-inicio" onchange="calcPreview()">
+          </div>
+          <div class="input-group">
+            <label id="lbl-duracao">Duração</label>
+            <select id="p-duracao" onchange="calcPreview()">
+              <option value="1">1 dia</option><option value="3">3 dias</option><option value="7">7 dias</option>
+              <option value="21">21 dias</option><option value="40">40 dias</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group">
+          <label id="lbl-horas">Meta de Jejum Diário</label>
+          <select id="p-horas">
+            <option value="24h">24 Horas</option><option value="12h">12 Horas</option>
+            <option value="18h">18 Horas</option><option value="6h">6 Horas</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label id="lbl-freq">Frequência</label>
+          <select id="p-freq" onchange="toggleWeek(this.value)">
+            <option value="corrido">Dias Corridos</option>
+            <option value="semanal">Dias Específicos</option>
+          </select>
+          <div id="week-selector" class="hide">
+            <div class="weekday-grid">
+              <div class="day-pill" data-d="1">Seg</div><div class="day-pill" data-d="2">Ter</div><div class="day-pill" data-d="3">Qua</div><div class="day-pill" data-d="4">Qui</div>
+              <div class="day-pill" data-d="5">Sex</div><div class="day-pill" data-d="6">Sáb</div><div class="day-pill" data-d="0">Dom</div>
+            </div>
+          </div>
+        </div>
+        <div style="background: var(--surface2); padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 15px;">
+          <small id="lbl-preview-txt">Previsão de Término:</small><br>
+          <strong id="p-preview-date">--/--/----</strong>
+        </div>
+        <button class="btn-main" onclick="savePlan()" id="btn-save">ATIVAR PROPÓSITO</button>
+      </div>
+    </section>
+
+    <section id="view-lista" class="hide">
+      <div id="plans-container"></div>
+    </section>
+
+    <section id="view-config" class="hide">
+      <div class="card">
+        <h3 id="txt-cfg">Configurações</h3>
+        <div class="input-group">
+          <label id="lbl-lang">Idioma</label>
+          <select id="cfg-lang" onchange="updateLang(this.value)">
+            <option value="pt">Português</option><option value="en">English</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label id="lbl-theme">Tema Visual</label>
+          <select id="cfg-theme" onchange="setTheme(this.value)">
+            <option value="paper">Papel</option><option value="sinai">Monte Sinai</option>
+            <option value="ceu">Azul Céu</option><option value="noite">Modo Noite</option>
+            <option value="videira">Videira</option><option value="oliveira">Oliveira</option>
+          </select>
+        </div>
+        <hr>
+        <h3 id="txt-rem">Meus Lembretes</h3>
+        <div class="input-group"><label>📖 Leitura Bíblica</label><input type="time" id="rem-bible" value="08:00"></div>
+        <div class="input-group"><label>🙏 Oração</label><input type="time" id="rem-pray" value="06:00"></div>
+        <div class="input-group"><label>🥛 Início Jejum</label><input type="time" id="rem-f-start" value="06:00"></div>
+        <div class="input-group"><label>✨ Entrega Jejum</label><input type="time" id="rem-f-end" value="18:00"></div>
+        <button class="btn-main" style="background: var(--surface2); color: var(--ink);" onclick="alert('Lembretes Salvos!')">Salvar Lembretes</button>
+      </div>
+    </section>
+
+    <section id="view-detalhe" class="hide">
+      <div id="detail-content"></div>
+    </section>
+  </main>
+
+  <nav class="nav-bar">
+    <button class="nav-item active" onclick="showView('novo')" id="nav-novo">
+      <span class="nav-icon">➕</span><span id="txt-nav-novo">Novo</span>
+    </button>
+    <button class="nav-item" onclick="showView('lista')" id="nav-lista">
+      <span class="nav-icon">📖</span><span id="txt-nav-lista">Diário</span>
+    </button>
+    <button class="nav-item" onclick="showView('config')" id="nav-config">
+      <span class="nav-icon">⚙️</span><span id="txt-nav-cfg">Ajustes</span>
+    </button>
+  </nav>
+</div>
+
+<script>
+  let db = JSON.parse(localStorage.getItem('faith_db_v10')) || { plans: [], config: { theme: 'paper', lang: 'pt' } };
+  let selectedWeek = [];
+
+  const langMap = {
+    pt: { title: "🙏 Propósito & Fé", novo: "Novo", diario: "Diário", ajustes: "Ajustes", tema: "Título da Campanha", inicio: "Início", duracao: "Duração", horas: "Período de Jejum", freq: "Frequência", btn: "ATIVAR PROPÓSITO", cfg: "Configurações", rem: "Lembretes Diários", preview: "Previsão de Término:" },
+    en: { title: "🙏 Purpose & Faith", novo: "New", diario: "Journal", ajustes: "Settings", tema: "Campaign Title", inicio: "Start", duracao: "Duration", horas: "Fast Period", freq: "Frequency", btn: "ACTIVATE PURPOSE", cfg: "Settings", rem: "Daily Reminders", preview: "Estimated End:" }
+  };
+
+  function showView(id) {
+    document.querySelectorAll('section').forEach(s => s.classList.add('hide'));
+    document.getElementById('view-' + id).classList.remove('hide');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('nav-' + (id === 'detalhe' ? 'lista' : id)).classList.add('active');
+    if(id === 'lista') renderPlans();
+  }
+
+  function toggleWeek(v) { document.getElementById('week-selector').classList.toggle('hide', v !== 'semanal'); calcPreview(); }
+
+  document.querySelectorAll('.day-pill').forEach(p => {
+    p.onclick = () => {
+      p.classList.toggle('selected');
+      const d = parseInt(p.dataset.d);
+      if(selectedWeek.includes(d)) selectedWeek = selectedWeek.filter(x => x !== d);
+      else selectedWeek.push(d);
+      calcPreview();
+    }
+  });
+
+  function calcPreview() {
+    const start = document.getElementById('p-inicio').value;
+    if(!start) return;
+    let d = new Date(start + 'T00:00:00');
+    const dur = parseInt(document.getElementById('p-duracao').value);
+    const freq = document.getElementById('p-freq').value;
+    if(freq === 'corrido') { d.setDate(d.getDate() + (dur - 1)); }
+    else {
+      if(!selectedWeek.length) { document.getElementById('p-preview-date').innerText = "Escolha os dias"; return; }
+      let c = 0; while(c < dur) { if(selectedWeek.includes(d.getDay())) c++; if(c < dur) d.setDate(d.getDate() + 1); }
+    }
+    const res = d.toLocaleDateString('pt-BR');
+    document.getElementById('p-preview-date').innerText = res;
+    return res;
+  }
+
+  function savePlan() {
+    const tema = document.getElementById('p-tema').value || "Propósito";
+    const inicio = document.getElementById('p-inicio').value;
+    if(!inicio) return alert("Selecione a data!");
+    const duration = parseInt(document.getElementById('p-duracao').value);
+    const freq = document.getElementById('p-freq').value;
+    const plano = { id: Date.now(), tema, inicio, fim: calcPreview(), horas: document.getElementById('p-horas').value, dias: [] };
+    let cur = new Date(inicio + 'T00:00:00');
+    let c = 0;
+    while(c < duration) {
+      if(freq === 'corrido' || selectedWeek.includes(cur.getDay())) {
+        plano.dias.push({ data: cur.toLocaleDateString('pt-BR'), jejum: false, oracao: false, leitura: false });
+        c++;
+      }
+      cur.setDate(cur.getDate() + 1);
+    }
+    db.plans.unshift(plano); saveDB(); showView('lista');
+  }
+
+  function renderPlans() {
+    const cont = document.getElementById('plans-container');
+    cont.innerHTML = db.plans.length ? '' : '<p style="text-align:center; color:var(--muted); margin-top:50px;">Vazio</p>';
+    db.plans.forEach(p => {
+      let totalTasks = p.dias.length * 3;
+      let doneTasks = p.dias.reduce((acc, d) => acc + (d.jejum?1:0) + (d.oracao?1:0) + (d.leitura?1:0), 0);
+      const pct = Math.round((doneTasks / totalTasks) * 100);
+      cont.innerHTML += `
+        <div class="card" onclick="showDetail(${p.id})">
+          <b style="color:var(--accent)">${p.tema}</b><br><small>${p.inicio} — ${p.fim}</small>
+          <div style="height:4px; background:var(--surface2); margin-top:10px; border-radius:2px;"><div style="width:${pct}%; height:100%; background:var(--accent)"></div></div>
+        </div>`;
+    });
+  }
+
+  function showDetail(id) {
+    const p = db.plans.find(x => x.id === id);
+    showView('detalhe');
+    document.getElementById('detail-content').innerHTML = `
+      <button onclick="showView('lista')" style="background:none; border:none; color:var(--accent); font-weight:bold; margin-bottom:15px;">← VOLTAR</button>
+      <div class="card">
+        <h2 style="margin:0">${p.tema}</h2>
+        <p style="font-size:12px; color:var(--muted)">Meta: ${p.horas} | Progresso por dia:</p>
+        <hr>
+        ${p.dias.map((d, i) => `
+          <div class="timeline-item">
+            <div class="timeline-header">
+              <div class="day-circle ${(d.jejum && d.oracao && d.leitura) ? 'done-all' : ''}">${i+1}</div>
+              <b style="font-size:14px;">${d.data}</b>
+            </div>
+            <div class="check-group">
+              <div class="check-tag ${d.jejum ? 'active' : ''}" onclick="toggleTask(${p.id}, ${i}, 'jejum')">JEJUM</div>
+              <div class="check-tag ${d.oracao ? 'active' : ''}" onclick="toggleTask(${p.id}, ${i}, 'oracao')">ORAÇÃO</div>
+              <div class="check-tag ${d.leitura ? 'active' : ''}" onclick="toggleTask(${p.id}, ${i}, 'leitura')">LEITURA</div>
+            </div>
+          </div>
+        `).join('')}
+        <button onclick="deletePlan(${p.id})" style="color:var(--danger); border:none; background:none; width:100%; margin-top:20px; font-weight:bold; font-size:11px;">EXCLUIR</button>
+      </div>`;
+  }
+
+  function toggleTask(pid, idx, task) {
+    const p = db.plans.find(x => x.id === pid);
+    p.dias[idx][task] = !p.dias[idx][task];
+    saveDB(); showDetail(pid);
+  }
+
+  function deletePlan(id) { if(confirm("Apagar?")) { db.plans = db.plans.filter(x => x.id !== id); saveDB(); showView('lista'); } }
+  function setTheme(t) { document.documentElement.setAttribute('data-theme', t); db.config.theme = t; saveDB(); }
+
+  function updateLang(lang) {
+    db.config.lang = lang; const t = langMap[lang];
+    document.getElementById('txt-app-title').innerText = t.title;
+    document.getElementById('txt-nav-novo').innerText = t.novo;
+    document.getElementById('txt-nav-lista').innerText = t.diario;
+    document.getElementById('txt-nav-cfg').innerText = t.ajustes;
+    document.getElementById('lbl-tema').innerText = t.tema;
+    document.getElementById('lbl-inicio').innerText = t.inicio;
+    document.getElementById('lbl-duracao').innerText = t.duracao;
+    document.getElementById('lbl-horas').innerText = t.horas;
+    document.getElementById('lbl-freq').innerText = t.freq;
+    document.getElementById('btn-save').innerText = t.btn;
+    document.getElementById('txt-cfg').innerText = t.cfg;
+    document.getElementById('txt-rem').innerText = t.rem;
+    saveDB();
+  }
+
+  function saveDB() { localStorage.setItem('faith_db_v10', JSON.stringify(db)); }
+
+  window.onload = () => {
+    setTheme(db.config.theme); updateLang(db.config.lang);
+    document.getElementById('cfg-theme').value = db.config.theme;
+    document.getElementById('cfg-lang').value = db.config.lang;
+  };
+</script>
+</body>
+</html>
