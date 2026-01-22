@@ -2,10 +2,12 @@
 <html lang="pt-BR" data-theme="paper">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover" />
+  <meta name="robots" content="index,follow" />
+  <meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover" />
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#f6f1e8" />
   <title>Jejum & Oração</title>
+  <meta name="description" content="App simples para organizar propósitos de jejum e oração, com diário, lembretes e acompanhamento diário." />
   <style>
     :root{
       --bg: #f6f1e8;
@@ -208,7 +210,19 @@
 
         <button class="btn-main" id="btn-enable-notif">ATIVAR NOTIFICAÇÕES</button>
         <button class="btn-outline" id="btn-disable-notif" style="border-color: var(--danger); color: var(--danger);">DESATIVAR</button>
-      </div>
+      
+        <hr style="border:0; border-top: 1px solid var(--stroke); margin: 22px 0;">
+        <div style="font-size:12px; color: var(--muted); line-height:1.5;">
+          <strong>Informações do site</strong><br>
+          <a href="about.html" style="color: var(--accent); text-decoration:none;">Sobre</a> ·
+          <a href="privacy.html" style="color: var(--accent); text-decoration:none;">Privacidade</a> ·
+          <a href="terms.html" style="color: var(--accent); text-decoration:none;">Termos</a> ·
+          <a href="contact.html" style="color: var(--accent); text-decoration:none;">Contato</a>
+          <div style="margin-top:8px; opacity:.9;">
+            Este app armazena seus dados apenas no seu navegador (localStorage). Não coletamos informações pessoais em servidor.
+          </div>
+        </div>
+</div>
     </section>
 
     <section id="view-detalhe" class="hide">
